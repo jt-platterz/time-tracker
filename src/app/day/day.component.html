@@ -1,0 +1,22 @@
+
+
+<section class="ttDayComponent">
+  <header class="ttDayComponent-header">
+    <section class="ttDayComponent-date">
+      <section class="ttDayComponent-weekDay">{{ (date$ | async)?.format('dddd') }}</section>
+      <section class="ttDayComponent-monthDay">{{ (date$ | async)?.format('MMMM Mo, YYYY') }}</section>
+      <section class="ttDayComponent-links">
+        <a class="ttDayComponent-link" [routerLink]="['/date', (prevDay$ | async)]">Previous</a>
+        <a class="ttDayComponent-link" [routerLink]="['/date', (nextDay$ | async)]">Next</a>
+      </section>
+    </section>
+
+    <section class="ttDayComponent-time">
+      {{ (now$ | async)?.format('h:mm A') }}
+    </section>
+  </header>
+
+  <button type="button" class="ttDayComponent-addEventBtn" (click)="newEvent($event)">Add Event</button>
+
+  <tt-event [eventID]="eventID" *ngFor="let eventID of events$ | async" class="ttDayComponent-event"></tt-event>
+</section>

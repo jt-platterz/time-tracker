@@ -1,0 +1,38 @@
+@import '../../assets/styles/variables/variables';
+
+.ttEvent {
+  @extend %font-smoothing;
+  display: flex;
+}
+
+.ttEvent-time {
+  @extend %tt-fw-medium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  color: white;
+  font-size: $tt-fs-7;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.ttEvent-details {
+  padding: $base-padding / 2 $base-padding;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.ttEvent-header {
+  font-size: $tt-fs-4;
+  color: $grey-light;
+}
+
+.ttEvent-description {
+  @extend %tt-fw-regular;
+  font-size: $tt-fs-6;
+}
+
+.ttEvent-header + .ttEvent-description {
+  margin-top: $base-padding / 3;
+}

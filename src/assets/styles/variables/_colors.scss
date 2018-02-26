@@ -1,0 +1,9 @@
+$black: #333;
+
+$grey-dark: lighten($black, 15%);
+$grey-reg: lighten($grey-dark, 15%);
+$grey-light: lighten($grey-reg, 15%);
+$grey-lighter: lighten($grey-light, 15%);
+$grey-ultralight: lighten($grey-lighter, 15%);
+
+$text-color: $black;

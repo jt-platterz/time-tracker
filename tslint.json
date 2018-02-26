@@ -16,11 +16,6 @@
     },
     "eofline": true,
     "forin": true,
-    "import-blacklist": [
-      true,
-      "rxjs",
-      "rxjs/Rx"
-    ],
     "import-spacing": true,
     "indent": [
       true,
@@ -120,13 +115,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      "tt",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      "tt",
       "kebab-case"
     ],
     "no-output-on-prefix": true,

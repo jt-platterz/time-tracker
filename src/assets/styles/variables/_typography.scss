@@ -1,0 +1,35 @@
+$tt-fs-1: 8px;
+$tt-fs-2: 10px;
+$tt-fs-3: 12px;
+$tt-fs-4: 14px;
+$tt-fs-5: 16px;
+$tt-fs-6: 18px;
+$tt-fs-7: 20px;
+$tt-fs-8: 24px;
+$tt-fs-9: 30px;
+$tt-fs-10: 36px;
+$tt-fs-11: 42px;
+$tt-fs-12: 48px;
+$tt-fs-13: 54px;
+$tt-fs-14: 60px;
+
+%font-smoothing {
+  -webkit-font-smoothing: antialiased; // sass-lint:disable-line no-vendor-prefixes
+  -moz-osx-font-smoothing: grayscale; // sass-lint:disable-line no-vendor-prefixes
+}
+
+%tt-fw-light {
+  font-weight: 300;
+}
+
+%tt-fw-regular {
+  font-weight: 400;
+}
+
+%tt-fw-medium {
+  font-weight: 500;
+}
+
+%tt-fw-bold {
+  font-weight: 700;
+}

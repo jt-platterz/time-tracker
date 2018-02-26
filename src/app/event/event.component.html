@@ -1,0 +1,14 @@
+<section class="ttEvent"
+  *ngIf="event$ | async; let event" [style.background-color]="mainBgColor$ | async">
+  <section class="ttEvent-time" [style.background-color]="borderBgColor$ | async">
+    {{ time$ | async }}
+  </section>
+  <section class="ttEvent-details">
+    <header class="ttEvent-header">
+      {{ (category$ | async)?.title }} - {{ (subcategory$ | async)?.title }}
+    </header>
+    <section class="ttEvent-description">
+      {{ event.title }}
+    </section>
+  </section>
+</section>

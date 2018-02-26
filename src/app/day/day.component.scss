@@ -1,0 +1,70 @@
+@import '../../assets/styles/variables/variables';
+
+:host-context {
+  display: block;
+  margin: auto;
+  width: $site-width;
+  max-width: $max-site-width;
+}
+
+.ttDayComponent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ttDayComponent-weekDay {
+  font-size: $tt-fs-8;
+}
+
+.ttDayComponent-monthDay {
+  font-size: $tt-fs-5;
+  color: $grey-light;
+}
+
+.ttDayComponent-weekDay + .ttDayComponent-monthDay,
+.ttDayComponent-monthDay + .ttDayComponent-links {
+  margin-top: $base-padding / 4;
+}
+
+.ttDayComponent-link {
+  padding: $base-padding / 4 $base-padding / 2;
+  width: 100%;
+  background-color: $grey-ultralight;
+  color: $grey-dark;
+  font-size: $tt-fs-2;
+  border-radius: 4px;
+  border: 0;
+  text-decoration: none;
+
+  & + & {
+    margin-left: $base-padding / 3;
+  }
+}
+
+.ttDayComponent-time {
+  font-size: $tt-fs-11;
+}
+
+.ttDayComponent-header + .ttDayComponent-addEventBtn,
+.ttDayComponent-addEventBtn + .ttDayComponent-event {
+  margin-top: $base-padding * 2;
+}
+
+.ttDayComponent-event {
+  display: block;
+
+  & + & {
+    margin-top: $base-padding;
+  }
+}
+
+.ttDayComponent-addEventBtn {
+  padding: $base-padding / 2;
+  width: 100%;
+  background-color: $grey-ultralight;
+  color: $grey-dark;
+  font-size: $tt-fs-4;
+  border-radius: 4px;
+  border: 0;
+}
