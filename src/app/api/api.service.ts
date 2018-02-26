@@ -31,6 +31,12 @@ export class ApiService {
       newParams = newParams.set(k, params[k].toString());
     });
 
+    const authToken = localStorage.getItem('authToken');
+
+    if (authToken) {
+      httpOptions.headers = httpOptions.headers.set('Authorization', authToken);
+    }
+
     return Object.assign({}, {params: newParams}, httpOptions);
   }
 }

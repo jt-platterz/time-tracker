@@ -9,6 +9,8 @@ import { Observable } from 'rxjs/Rx';
 import { IEvent } from './event/event.model';
 import { selectModalEvent } from './event/store/event.selectors';
 import { cloneDeep } from 'lodash';
+import { authInitialize } from './auth/store/auth.actions';
+import { selectCurrentUser } from './auth/store/auth.selectors';
 
 @Component({
   selector: 'tt-root',
@@ -21,7 +23,12 @@ export class AppComponent implements OnInit {
   constructor(private _store: Store<IAppState>) {}
 
   ngOnInit(): void {
-    this._store.dispatch(subcategoryRequest());
+    this._store.dispatch(authInitialize());
+
+    this._store
+      .select(selectCurrentUser)
+      .filter((user) => user != null)
+      .subscribe(() => this._store.dispatch(subcategoryRequest()));
 
     this.modal$ =
       this._store

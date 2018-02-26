@@ -16,6 +16,7 @@ import { EventModule } from './event/event.module';
 import { DayModule } from './day/day.module';
 import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { environment } from '../environments/environment';
     StoreDevtoolsModule.instrument({ maxAge: 50 }),
     EffectsModule.forRoot([]),
     RouterModule.forRoot(appRoutes, {enableTracing: environment.production}),
+    AuthModule,
     CategoryModule,
     SubcategoryModule,
     EventModule,

@@ -1,0 +1,16 @@
+<section class="ttAuth">
+  <form (ngSubmit)="login()">
+    <header class="ttAuth-header">
+      Sign In
+    </header>
+
+    <section class="ttAuth-formBody">
+      <input class="ttAuth-email" [(ngModel)]="loginObj.email" type="email" name="email">
+      <input class="ttAuth-email" [(ngModel)]="loginObj.password" type="password" name="password">
+    </section>
+
+    <footer class="ttAuth-footer">
+      <button type="submit" class="ttAuth-loginBtn">Sign In</button>
+    </footer>
+  </form>  
+</section>

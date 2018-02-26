@@ -37,7 +37,6 @@ export class EventModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedSubcategory$
       .subscribe((subCat) => {
-        debugger
         if (subCat) {
           this.event.subcategory_id = subCat.id;
         }
