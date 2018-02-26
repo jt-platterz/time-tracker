@@ -8,6 +8,7 @@ import { selectLoginError } from './store/auth.selectors';
 
 @Component({
   selector: 'tt-auth',
+  styleUrls: ['./auth.component.scss'],
   templateUrl: './auth.component.html'
 })
 export class AuthComponent implements OnInit, OnDestroy {
