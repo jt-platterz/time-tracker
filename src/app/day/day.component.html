@@ -4,7 +4,7 @@
   <header class="ttDayComponent-header">
     <section class="ttDayComponent-date">
       <section class="ttDayComponent-weekDay">{{ (date$ | async)?.format('dddd') }}</section>
-      <section class="ttDayComponent-monthDay">{{ (date$ | async)?.format('MMMM Mo, YYYY') }}</section>
+      <section class="ttDayComponent-monthDay">{{ (date$ | async)?.format('MMMM Do, YYYY') }}</section>
       <section class="ttDayComponent-links">
         <a class="ttDayComponent-link" [routerLink]="['/date', (prevDay$ | async)]">Previous</a>
         <a class="ttDayComponent-link" [routerLink]="['/date', (nextDay$ | async)]">Next</a>
