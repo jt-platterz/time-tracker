@@ -9,6 +9,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './store/auth.effects';
 import { AuthComponent } from './auth.component';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
     AuthComponent
   ],
   imports: [
+    CommonModule,
     FormsModule,
     StoreModule.forFeature(AUTH_STATE_NAME, authReducer),
     EffectsModule.forFeature([AuthEffects]),

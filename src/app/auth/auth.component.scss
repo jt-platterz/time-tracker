@@ -28,6 +28,14 @@
   font-size: 0;
 }
 
+.ttAuth-authError {
+  font-size: $tt-fs-5;
+  padding: $base-padding / 2;
+  background: red;
+  color: white;
+  border-radius: 4px;
+}
+
 .ttAuth-email {
   width: calc(100% - #{$base-padding * 2});
   padding: $base-padding / 2 $base-padding;
@@ -62,4 +70,8 @@
 .ttAuth-header + .ttAuth-formBody,
 .ttAuth-formBody + .ttAuth-footer {
   margin-top: $base-padding * 2;
+}
+
+.ttAuth-authError + .ttAuth-email {
+  margin-top: $base-padding / 2;
 }

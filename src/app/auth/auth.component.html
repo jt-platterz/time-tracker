@@ -5,6 +5,10 @@
     </header>
 
     <section class="ttAuth-formBody">
+      <section class="ttAuth-authError" *ngIf="error$ | async; let error">
+        {{ error }}
+      </section>
+
       <input class="ttAuth-email" [(ngModel)]="loginObj.email" type="email" name="email" placeholder="Email Address">
       <input class="ttAuth-password" [(ngModel)]="loginObj.password" type="password" name="password" placeholder="Password">
     </section>
