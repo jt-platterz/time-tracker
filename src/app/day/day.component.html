@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <section class="ttDay">
   <tt-day-sidebar class="ttDay-sidebar"></tt-day-sidebar>
   <tt-event-modal class="ttDay-eventModal"></tt-event-modal>
@@ -7,27 +6,3 @@
     <tt-event [eventID]="eventID" *ngFor="let eventID of events$ | async" class="ttDay-event"></tt-event>
   </section>
 </section>
-=======
-
-
-<section class="ttDayComponent">
-  <header class="ttDayComponent-header">
-    <section class="ttDayComponent-date">
-      <section class="ttDayComponent-weekDay">{{ (date$ | async)?.format('dddd') }}</section>
-      <section class="ttDayComponent-monthDay">{{ (date$ | async)?.format('MMMM Do, YYYY') }}</section>
-      <section class="ttDayComponent-links">
-        <a class="ttDayComponent-link" [routerLink]="['/date', (prevDay$ | async)]">Previous</a>
-        <a class="ttDayComponent-link" [routerLink]="['/date', (nextDay$ | async)]">Next</a>
-      </section>
-    </section>
-
-    <section class="ttDayComponent-time">
-      {{ (now$ | async)?.format('h:mm A') }}
-    </section>
-  </header>
-
-  <button type="button" class="ttDayComponent-addEventBtn" (click)="newEvent($event)">Add Event</button>
-
-  <tt-event [eventID]="eventID" *ngFor="let eventID of events$ | async" class="ttDayComponent-event"></tt-event>
-</section>
->>>>>>> a5261aec981e715acfb1d1795b2c138db7a453dc
