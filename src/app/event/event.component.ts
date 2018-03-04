@@ -10,27 +10,28 @@ import { ICategory } from '../category/category.model';
 import { selectCategory } from '../category/store/category.selectors';
 import { lightenColor, transparentize } from './colors';
 import * as moment from 'moment';
+import { ReactiveComponent } from '../reactive-component/reactive.component';
 
 @Component({
   selector: 'tt-event',
   styleUrls: ['./event.component.scss'],
   templateUrl: './event.component.html'
 })
-export class EventComponent implements OnInit, OnDestroy {
+export class EventComponent extends ReactiveComponent implements OnInit {
   @Input() eventID: number;
 
   event$: Observable<IEvent>;
   category$: Observable<ICategory>;
   subcategory$: Observable<ISubcategory>;
-  borderBgColor$: Observable<string>;
-  mainBgColor$: Observable<string>;
+  lightColor$: Observable<string>;
+  mainColor$: Observable<string>;
   time$: Observable<string>;
-
-  private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private _store: Store<IAppState>,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.event$ =
@@ -47,12 +48,12 @@ export class EventComponent implements OnInit, OnDestroy {
         .filter((subcategory) => subcategory != null)
         .switchMap((subcategory) => this._store.select(selectCategory(subcategory.category_id)));
 
-    this.borderBgColor$ =
+    this.mainColor$ =
       this.category$
         .filter((category) => category != null)
         .map((category) => `#${category.color}`);
 
-    this.mainBgColor$ =
+    this.lightColor$ =
       this.category$
         .filter((category) => category != null)
         .map((category) => transparentize(category.color, 90));
@@ -62,10 +63,5 @@ export class EventComponent implements OnInit, OnDestroy {
         .filter((event) => event != null)
         .map((event) => moment(event.datetime))
         .map((time) => time.format('h:mm A'));
-  }
-
-  ngOnDestroy(): void {
-    this._destroy$.next();
-    this._destroy$.complete();
   }
 }

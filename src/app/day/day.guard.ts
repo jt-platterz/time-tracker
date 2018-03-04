@@ -25,6 +25,6 @@ export class DayGuard implements CanActivate {
     const today = moment().startOf('day');
     const routeDate = dateParamToDate(param);
 
-    return routeDate.isSame(today) ? this._goToToday() : true;
+    return routeDate && !routeDate.isSame(today) ? true : this._goToToday();
   }
 }

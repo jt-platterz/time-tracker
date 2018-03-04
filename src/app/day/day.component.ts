@@ -8,6 +8,8 @@ import * as moment from 'moment';
 import { dateParamToDate, nextDay, prevDay } from './day.helpers';
 import { selectEvents, selectEventsForDate, selectModalEvent } from '../event/store/event.selectors';
 import { eventRequest, eventCreate, eventOpenModal, eventCloseModal } from '../event/store/event.actions';
+import { ReactiveComponent } from '../reactive-component/reactive.component';
+import { Moment } from '../date/moment';
 
 const TODAY = 'today';
 
@@ -16,66 +18,48 @@ const TODAY = 'today';
   styleUrls: ['./day.component.scss'],
   templateUrl: './day.component.html'
 })
-export class DayComponent implements OnInit, OnDestroy {
-  day$: Observable<string>;
+export class DayComponent extends ReactiveComponent implements OnInit, OnDestroy {
+  now$: BehaviorSubject<Moment> = new BehaviorSubject<Moment>(moment());
+  routeParam$: Observable<string>;
+  routeDate$: Observable<Moment>;
+  dateForEvents$: Observable<Moment>;
   events$: Observable<number[]>;
-  date$: Observable<moment.Moment>;
-  nextDay$: Observable<string>;
-  prevDay$: Observable<string>;
-  now$: BehaviorSubject<moment.Moment> = new BehaviorSubject<moment.Moment>(moment());
-
-  private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private _store: Store<IAppState>,
     private _route: ActivatedRoute
-  ) {}
-
-  @HostListener('click', ['$event'])
-  onClick(e: MouseEvent): void {
-    this._store
-      .select(selectModalEvent)
-      .first()
-      .filter((event) => event != null)
-      .subscribe((event) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        this._store.dispatch(eventCloseModal());
-      });
+  ) {
+    super();
   }
 
   ngOnInit(): void {
+    this.routeParam$ =
+      this._route
+        .params
+        .map((p) => p.date)
+        .takeUntil(this._destroy$);
+
+    this.routeDate$ =
+      this.routeParam$
+        .map(this._parseDate)
+        .takeUntil(this._destroy$);
+
     Observable
       .interval(10000)
       .takeUntil(this._destroy$)
       .subscribe(() => this.now$.next(moment()));
 
-    console.warn('ngOnInit');
-    const dateObs = this._route.params.map((p) => p.date).map(this._parseDate);
-
-    this.date$ = Observable
-      .combineLatest(this.now$, dateObs)
-      .map(([now, routeDate]) => routeDate || now.startOf('day'))
-      .takeUntil(this._destroy$);
+    this.dateForEvents$ =
+      Observable
+        .combineLatest(this.routeParam$, this.routeDate$, this.now$)
+        .map(([routeParam, routeDate, now]) => !!routeParam ? routeDate : now)
+        .takeUntil(this._destroy$);
 
     this.events$ =
-      this.date$
+      this.dateForEvents$
         .do((date) => this._store.dispatch(eventRequest(date)))
-        .switchMap((date) => this._store.select(selectEventsForDate(date)));
-
-    this.nextDay$ =
-      this.date$
-        .map((date) => nextDay(date));
-
-    this.prevDay$ =
-      this.date$
-        .map((date) => prevDay(date));
-  }
-
-  ngOnDestroy(): void {
-    this._destroy$.next();
-    this._destroy$.complete();
+        .switchMap((date) => this._store.select(selectEventsForDate(date)))
+        .takeUntil(this._destroy$);
   }
 
   newEvent(event: MouseEvent): void {

@@ -1,10 +1,21 @@
 @import '../../../assets/styles/variables/variables';
 
-:host-context {
-  display: block;
+.ttEventModal-backdrop {
   position: fixed;
   top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: $z-index-modal;
+  background-color: transparentize($brand-secondary-darker, 0.8);
+}
+
+.ttEventModal {
+  display: block;
+  position: absolute;
+  top: 0;
   left: 50%;
+  z-index: $z-index-modal;
   width: 550px;
   max-width: calc(100vw - #{$base-padding * 4});
   padding: $base-padding;

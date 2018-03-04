@@ -4,10 +4,13 @@ import { DayGuard } from './day.guard';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EventModule } from '../event/event.module';
+import { DaySidebarComponent } from './day-sidebar/day-sidebar.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 @NgModule({
   declarations: [
-    DayComponent
+    DayComponent,
+    DaySidebarComponent
   ],
   exports: [
     DayComponent
@@ -18,6 +21,7 @@ import { EventModule } from '../event/event.module';
   imports: [
     CommonModule,
     RouterModule,
+    AngularFontAwesomeModule,
     EventModule
   ]
 })

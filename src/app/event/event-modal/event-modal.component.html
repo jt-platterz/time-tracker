@@ -1,33 +1,37 @@
-<form (ngSubmit)="addEvent()">
-  <section class="ttEventModal-title">
-    <input [(ngModel)]="event.title" name="title" class="ttEventModal-input" placeholder="Task name here..." autofocus>
-  </section>
-  
-  <section class="ttEventModal-categories">
-    <section class="ttEventModal-category" *ngFor="let category of categories$ | async">
-      <button class="ttEventModal-categoryBtn" type="button"
-        [class.isActive]="(selectedCategory$ | async)?.id === category.id"
-        [style.background-color]="categoryBgColor(category)" [style.color]="categoryColor(category)"
-        [style.border-color]="categoryBorderColor(category)"
-        (click)="selectCategory(category)">
-        {{ category.title }}
-      </button>
-    </section>
-  </section>
+<section class="ttEventModal-backdrop" (click)="hideModal()" *ngIf="event$ | async" [@modalBackdropAnimation]></section>
 
-  <section class="ttEventModal-subcategories" *ngIf="selectedCategory$ | async">
-    <section class="ttEventModal-subcategory" *ngFor="let subcategory of subcategories$ | async">
-      <button class="ttEventModal-subcategoryBtn" type="button"
-        [class.isActive]="(selectedSubcategory$ | async)?.id === subcategory.id"
-        [style.background-color]="subcategoryBgColor(subcategory)" [style.color]="subcategoryColor(subcategory)"
-        [style.border-color]="subcategoryBorderColor(subcategory)"
-        (click)="selectSubcategory(subcategory)">
-        {{ subcategory.title }}
-      </button>
+<section class="ttEventModal" *ngIf="event$ | async; let event" [@modalAnimation]>
+  <form (ngSubmit)="addEvent()">
+    <section class="ttEventModal-title">
+      <input [ngModel]="event.title" (ngModelChange)="updateEventField('title', $event)" name="title" class="ttEventModal-input" placeholder="Task name here..." autofocus>
     </section>
-  </section>
+    
+    <section class="ttEventModal-categories">
+      <section class="ttEventModal-category" *ngFor="let category of categories$ | async">
+        <button class="ttEventModal-categoryBtn" type="button"
+          [class.isActive]="(selectedCategory$ | async)?.id === category.id"
+          [style.background-color]="categoryBgColor(category)" [style.color]="categoryColor(category)"
+          [style.border-color]="categoryBorderColor(category)"
+          (click)="selectCategory(category)">
+          {{ category.title }}
+        </button>
+      </section>
+    </section>
 
-  <footer class="ttEventModal-footer">
-    <button type="submit" class="ttEventModal-saveEventBtn">Save Event</button>
-  </footer>
-</form>
+    <section class="ttEventModal-subcategories" *ngIf="selectedCategory$ | async">
+      <section class="ttEventModal-subcategory" *ngFor="let subcategory of subcategories$ | async">
+        <button class="ttEventModal-subcategoryBtn" type="button"
+          [class.isActive]="(selectedSubcategory$ | async)?.id === subcategory.id"
+          [style.background-color]="subcategoryBgColor(subcategory)" [style.color]="subcategoryColor(subcategory)"
+          [style.border-color]="subcategoryBorderColor(subcategory)"
+          (click)="selectSubcategory(subcategory)">
+          {{ subcategory.title }}
+        </button>
+      </section>
+    </section>
+
+    <footer class="ttEventModal-footer">
+      <button type="submit" class="ttEventModal-saveEventBtn">Save Event</button>
+    </footer>
+  </form>
+</section>

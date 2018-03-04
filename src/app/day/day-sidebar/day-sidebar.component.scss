@@ -1,0 +1,75 @@
+@import '../../../assets/styles/variables/variables';
+
+:host-context {
+  @extend %font-smoothing;
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  background-color: $brand-secondary;
+  z-index: $z-index-sidebar;
+  overflow-y: auto;
+}
+
+.ttDaySidebar-header {
+  padding: $base-padding;
+  text-align: center;
+}
+
+.ttDaySidebar-time {
+  @extend %tt-fw-bold;
+  width: 100%;
+  margin-top: -$base-padding;
+  margin-left: -$base-padding;
+  padding: $base-padding;
+  font-size: $tt-fs-7;
+  color: white;
+  text-align: center;
+  background-color: $brand-secondary-darker;
+}
+
+.ttDaySidebar-date {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ttDaySidebar-dateDetails {
+  text-align: center;
+}
+
+.ttDaySidebar-dateDay {
+  @extend %tt-fw-medium;
+  font-size: $tt-fs-10;
+}
+
+.ttDaySidebar-dateMonthYear {
+  @extend %tt-fw-regular;
+  font-size: $tt-fs-6;
+}
+
+.ttDaySidebar-goToToday {
+  display: inline-block;
+  padding: $base-padding / 4 $base-padding / 2;
+  color: $brand-primary;
+  background-color: $brand-secondary-dark;
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover,
+  &:focus {
+    color: white;
+    background-color: $brand-primary-dark;
+  }
+}
+
+.ttDaySidebar-time + .ttDaySidebar-date,
+.ttDaySidebar-date + .ttDaySidebar-goToToday {
+  margin-top: $base-padding;
+}
+
+.ttDaySidebar-link {
+  color: $black;
+}

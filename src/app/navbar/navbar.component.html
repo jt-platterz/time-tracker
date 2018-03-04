@@ -1,0 +1,10 @@
+<section class="ttNavbar">
+  <a class="ttNavbar-brand">Time Tracker</a>
+
+  <section class="ttNavbar-actions">
+    <ng-container *ngIf="user$ | async; let user">
+      <button class="ttNavbar-signOutBtn">Sign Out</button>
+      <button class="ttNavbar-accountBtn">{{ user.name }}</button>
+    </ng-container>
+  </section>
+</section>

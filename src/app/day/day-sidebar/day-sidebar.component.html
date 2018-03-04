@@ -1,0 +1,28 @@
+<header class="ttDaySidebar-header">
+  <section class="ttDaySidebar-time">{{ time$ | async }}</section>
+  <section class="ttDaySidebar-date">
+    <a class="ttDaySidebar-link" [routerLink]="['/date', (prevDay$ | async)]">
+      <fa name="chevron-left"></fa>
+    </a>
+
+    <section class="ttDaySidebar-dateDetails">
+      <section class="ttDaySidebar-dateDay">{{ day$ | async }}</section>
+      <section class="ttDaySidebar-dateMonthYear">{{ monthYear$ | async }}</section>
+
+    </section>
+    
+    <a class="ttDaySidebar-link" [routerLink]="['/date', (nextDay$ | async)]">
+      <fa name="chevron-right"></fa>
+    </a>
+  </section>
+
+  <a class="ttDaySidebar-goToToday" [routerLink]="['/date', 'today']" *ngIf="!(isToday$ | async)">Today</a>
+</header>
+
+<section class="ttDaySidebar-links">
+  <ul class="ttDaySidebar-linkGroup">
+    <li>
+      <button type="button" class="ttDaySidebar-link" (click)="newEvent()">Add Event</button>
+    </li>
+  </ul>
+</section>

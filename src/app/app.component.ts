@@ -29,10 +29,5 @@ export class AppComponent implements OnInit {
       .select(selectCurrentUser)
       .filter((user) => user != null)
       .subscribe(() => this._store.dispatch(subcategoryRequest()));
-
-    this.modal$ =
-      this._store
-        .select(selectModalEvent)
-        .map((event) => cloneDeep(event));
   }
 }

@@ -1,0 +1,45 @@
+@import '../../assets/styles/variables/variables';
+
+.ttNavbar {
+  @extend %font-smoothing;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $base-padding;
+  height: $navbar-height;
+  background-color: $brand-primary;
+}
+
+.ttNavbar-brand {
+  @extend %tt-fw-bold;
+  color: white;
+  font-size: $tt-fs-7;
+  z-index: 100;
+}
+
+.ttNavbar-signOutBtn,
+.ttNavbar-accountBtn {
+  @extend %tt-fw-medium;
+  height: $navbar-height / 2;
+  padding: $base-padding / 4 $base-padding / 2;
+  font-size: $tt-fs-5;
+  color: white;
+  background: $brand-primary;
+  border: 0;
+  border-radius: 4px;
+  transition: background-color 150ms linear;
+
+  &:hover,
+  &:focus {
+    background-color: $brand-primary-dark;
+    cursor: pointer;
+  }
+
+  & + & {
+    margin-left: $base-padding / 2;
+  }
+}
+
+.ttNavbar-accountBtn {
+  @extend %tt-fw-bold;
+}

@@ -1,5 +1,14 @@
-$black: #333;
+$brand-primary-darker: #0964A5;
+$brand-primary-dark: #2986C2;
+$brand-primary: #4CA5D9;
+$brand-primary-light: #76CCF7;
 
+$brand-secondary-darker: #BABABA;
+$brand-secondary-dark: #D5D5D5;
+$brand-secondary: #EAEAEA;
+$brand-secondary-light: #FFFFFF;
+
+$black: #333;
 $grey-dark: lighten($black, 15%);
 $grey-reg: lighten($grey-dark, 15%);
 $grey-light: lighten($grey-reg, 15%);
