@@ -15,12 +15,12 @@ export function eventReducer(state: IEventState = DEFAULT_STATE, action: EventAc
 
   switch (action.type) {
     case EventActions.RequestSuccess:
-      newEvents = new Map(state.events);
+      newEvents = new Map(cloneDeep(state.events));
       action.events.forEach((e) => newEvents.set(e.id, e));
 
       return {
         ...state,
-        events: cloneDeep(newEvents),
+        events: newEvents,
         eventGroups: _buildEventGroups(action, state)
       };
 
