@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Observable, Subject } from 'rxjs/Rx';
 import { IEvent } from './event.model';
 import { Store } from '@ngrx/store';
@@ -22,12 +23,13 @@ export class EventComponent extends ReactiveComponent implements OnInit {
 
   event$: Observable<IEvent>;
   category$: Observable<ICategory>;
-  lightColor$: Observable<string>;
-  mainColor$: Observable<string>;
+  lightColor$: Observable<SafeStyle>;
+  mainColor$: Observable<SafeStyle>;
   time$: Observable<string>;
 
   constructor(
     private _store: Store<IAppState>,
+    private _domSanitizer: DomSanitizer
   ) {
     super();
   }
@@ -50,6 +52,7 @@ export class EventComponent extends ReactiveComponent implements OnInit {
       this.category$
         .filter((category) => category != null)
         .map((category) => `#${category.color}`)
+        .map((color) => this._domSanitizer.bypassSecurityTrustStyle(color))
         .takeUntil(this._destroy$)
         .shareReplay(1);
 
@@ -57,6 +60,7 @@ export class EventComponent extends ReactiveComponent implements OnInit {
       this.category$
         .filter((category) => category != null)
         .map((category) => transparentize(category.color, 90))
+        .map((color) => this._domSanitizer.bypassSecurityTrustStyle(color))
         .takeUntil(this._destroy$)
         .shareReplay(1);
 

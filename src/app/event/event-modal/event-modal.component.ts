@@ -70,20 +70,21 @@ export class EventModalComponent extends ReactiveComponent implements AfterViewI
       .filter(([_, categories]) => categories && categories.length > 0)
       .takeUntil(this._destroy$)
       .subscribe(([event, categories]) => {
-        const eventCat = categories.find((c) => c.id === event.category_id);
-        this.selectedCategory$.next(eventCat || categories[0]);
+        const eventCat = categories.find((c) => c.id === event.category_id) || categories[0];
+        this.selectedCategory$.next(eventCat);
       });
   }
 
   addEvent(): void {
     this.event$
+      .withLatestFrom(this.selectedCategory$)
       .take(1)
-      .subscribe((event) => {
-        if (!event.category_id || !event.title) {
+      .subscribe(([event, category]) => {
+        if (!category.id || !event.title) {
           return;
         }
 
-        this._store.dispatch(eventSave(event));
+        this._store.dispatch(eventSave({...event, category_id: category.id}));
       });
   }
 
@@ -91,14 +92,11 @@ export class EventModalComponent extends ReactiveComponent implements AfterViewI
     this.event$
       .take(1)
       .subscribe((event) => {
-        const eventToEmit = {...event, [field]: value};
-        debugger
-        this._store.dispatch(eventOpenModal(eventToEmit))
+        this._store.dispatch(eventOpenModal({...event, [field]: value}));
       });
   }
 
   selectCategory(category: ICategory): void {
-    this.updateEventField('category_id', category.id);
     this.selectedCategory$.next(category);
     this.titleInput.nativeElement.focus();
   }
