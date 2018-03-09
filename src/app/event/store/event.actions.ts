@@ -4,11 +4,14 @@ import { IEvent } from '../event.model';
 export enum EventActions {
   Request = '[EVENT] Request',
   RequestSuccess = '[EVENT] Request Success',
-  Create = '[EVENT] Create',
-  CreateSuccess = '[EVENT] Create Success',
-  CreateFailure = '[EVENT] Create Failure',
+  Save = '[EVENT] Save',
+  SaveSuccess = '[EVENT] Save Success',
+  SaveFailure = '[EVENT] Save Failure',
   OpenModal = '[EVENT] Open Modal',
-  CloseModal = '[EVENT] Close Modal'
+  CloseModal = '[EVENT] Close Modal',
+  Delete = '[EVENT] Delete Request',
+  DeleteSuccess = '[EVENT] Delete Success',
+  DeleteFailure = '[EVENT] Delete Failure'
 }
 
 export interface IEventRequestAction {
@@ -28,28 +31,28 @@ export function eventRequestSuccess(date: moment.Moment, events: IEvent[]): IEve
   return {date, events, type: EventActions.RequestSuccess};
 }
 
-export interface IEventCreateAction {
-  type: EventActions.Create;
+export interface IEventSaveAction {
+  type: EventActions.Save;
   event: Partial<IEvent>;
 }
-export function eventCreate(event: Partial<IEvent>): IEventCreateAction {
-  return {event, type: EventActions.Create};
+export function eventSave(event: Partial<IEvent>): IEventSaveAction {
+  return {event, type: EventActions.Save};
 }
 
-export interface IEventCreateSuccessAction {
-  type: EventActions.CreateSuccess;
+export interface IEventSaveSuccessAction {
+  type: EventActions.SaveSuccess;
   event: IEvent;
 }
-export function eventCreateSuccess(event: IEvent): IEventCreateSuccessAction {
-  return {event, type: EventActions.CreateSuccess};
+export function eventSaveSuccess(event: IEvent): IEventSaveSuccessAction {
+  return {event, type: EventActions.SaveSuccess};
 }
 
-export interface IEventCreateFailureAction {
-  type: EventActions.CreateSuccess;
+export interface IEventSaveFailureAction {
+  type: EventActions.SaveFailure;
   errors: any;
 }
-export function eventCreateFailure(errors: any): IEventCreateFailureAction {
-  return {errors, type: EventActions.CreateSuccess};
+export function eventSaveFailure(errors: any): IEventSaveFailureAction {
+  return {errors, type: EventActions.SaveFailure};
 }
 
 export interface IEventOpenModalAction {
@@ -67,12 +70,39 @@ export function eventCloseModal(): IEventCloseModalAction {
   return {type: EventActions.CloseModal};
 }
 
+export interface IEventDeleteAction {
+  type: EventActions.Delete;
+  event: IEvent;
+}
+export function eventDelete(event: IEvent): IEventDeleteAction {
+  return {event, type: EventActions.Delete};
+}
+
+export interface IEventDeleteSuccessAction {
+  type: EventActions.DeleteSuccess;
+  event: IEvent;
+}
+export function eventDeleteSuccess(event: IEvent): IEventDeleteSuccessAction {
+  return {event, type: EventActions.DeleteSuccess};
+}
+
+export interface IEventDeleteFailureAction {
+  type: EventActions.DeleteFailure;
+  errors: any;
+}
+export function eventDeleteFailure(errors: any): IEventDeleteFailureAction {
+  return {errors, type: EventActions.DeleteFailure};
+}
+
 export type EventAction
   = IEventRequestAction
   | IEventRequestSuccessAction
-  | IEventCreateAction
-  | IEventCreateSuccessAction
-  | IEventCreateFailureAction
+  | IEventSaveAction
+  | IEventSaveSuccessAction
+  | IEventSaveFailureAction
   | IEventOpenModalAction
-  | IEventCloseModalAction;
+  | IEventCloseModalAction
+  | IEventDeleteAction
+  | IEventDeleteSuccessAction
+  | IEventDeleteFailureAction;
 

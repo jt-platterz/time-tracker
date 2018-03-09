@@ -15,6 +15,11 @@
 .ttDaySidebar-header {
   padding: $base-padding;
   text-align: center;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 .ttDaySidebar-time {
@@ -27,6 +32,10 @@
   color: white;
   text-align: center;
   background-color: $brand-secondary-darker;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    display: none;
+  }
 }
 
 .ttDaySidebar-date {
@@ -37,6 +46,22 @@
 
 .ttDaySidebar-dateDetails {
   text-align: center;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    display: none;
+  }
+}
+
+.ttDaySidebar-dateDetailsMobile {
+  display: none;
+  height: $navbar-height * 2 / 3;
+  font-size: $tt-fs-6;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .ttDaySidebar-dateDay {
@@ -68,8 +93,18 @@
 .ttDaySidebar-time + .ttDaySidebar-date,
 .ttDaySidebar-date + .ttDaySidebar-goToToday {
   margin-top: $base-padding;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    margin-top: 0;
+  }
 }
 
 .ttDaySidebar-link {
   color: $black;
+}
+
+.ttDaySidebar-links {
+  @media screen and (max-width: $mobile-breakpoint) {
+    display: none;
+  }
 }

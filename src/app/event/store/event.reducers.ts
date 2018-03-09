@@ -1,7 +1,8 @@
 import { IEventState, YearlyEvents } from './event.state';
-import { EventAction, EventActions, IEventRequestSuccessAction } from './event.actions';
+import { EventAction, EventActions, IEventRequestSuccessAction, IEventDeleteSuccessAction } from './event.actions';
 import { cloneDeep, sortBy } from 'lodash';
 import * as moment from 'moment';
+import { IEvent } from '../event.model';
 
 const DEFAULT_STATE = {
   events: new Map(),
@@ -10,14 +11,16 @@ const DEFAULT_STATE = {
 };
 
 export function eventReducer(state: IEventState = DEFAULT_STATE, action: EventAction): IEventState {
+  let newEvents: Map<number, IEvent>;
+
   switch (action.type) {
     case EventActions.RequestSuccess:
-      const newEvents = new Map(state.events);
+      newEvents = new Map(state.events);
       action.events.forEach((e) => newEvents.set(e.id, e));
 
       return {
         ...state,
-        events: newEvents,
+        events: cloneDeep(newEvents),
         eventGroups: _buildEventGroups(action, state)
       };
 
@@ -31,6 +34,15 @@ export function eventReducer(state: IEventState = DEFAULT_STATE, action: EventAc
       return {
         ...state,
         modal: null
+      };
+
+    case EventActions.DeleteSuccess:
+      newEvents = new Map(state.events);
+      newEvents.delete(action.event.id);
+
+      return {
+        ...state,
+        events: cloneDeep(newEvents)
       };
 
     default:
@@ -55,5 +67,5 @@ function _buildEventGroups(action: IEventRequestSuccessAction, state: IEventStat
   newYearMap.set(action.date.month() + 1, newMonthMap);
   newGroups.set(action.date.year(), newYearMap);
 
-  return newGroups;
+  return cloneDeep(newGroups);
 }

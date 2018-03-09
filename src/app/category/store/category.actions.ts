@@ -1,15 +1,25 @@
 import { ICategory } from '../category.model';
+
 export enum CategoryActions {
-  Add = '[CATEGORY] Add'
+  Request = '[SUBCATEGORY] Request',
+  RequestSuccess = '[SUBCATEGORY] Request Success'
 }
 
-export interface ICategoryAddAction {
-  type: CategoryActions.Add;
+export interface ICategoryRequestAction {
+  type: CategoryActions.Request;
+}
+export function categoryRequest(): ICategoryRequestAction {
+  return { type: CategoryActions.Request };
+}
+
+export interface ICategoryRequestSuccessAction {
+  type: CategoryActions.RequestSuccess;
   categories: ICategory[];
 }
-export function categoryAdd(categories: ICategory[]): ICategoryAddAction {
-  return {categories, type: CategoryActions.Add};
+export function categoryRequestSuccess(categories: ICategory[]): ICategoryRequestSuccessAction {
+  return { categories, type: CategoryActions.RequestSuccess };
 }
 
 export type CategoryAction
-  = ICategoryAddAction;
+  = ICategoryRequestAction
+  | ICategoryRequestSuccessAction;

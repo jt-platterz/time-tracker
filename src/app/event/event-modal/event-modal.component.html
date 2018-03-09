@@ -3,7 +3,7 @@
 <section class="ttEventModal" *ngIf="event$ | async; let event" [@modalAnimation]>
   <form (ngSubmit)="addEvent()">
     <section class="ttEventModal-title">
-      <input [ngModel]="event.title" (ngModelChange)="updateEventField('title', $event)" name="title" class="ttEventModal-input" placeholder="Task name here..." autofocus>
+      <input [ngModel]="event.title" (ngModelChange)="updateEventField('title', $event)" name="title" class="ttEventModal-input" placeholder="Task name here..." autofocus #titleInput>
     </section>
     
     <section class="ttEventModal-categories">
@@ -14,18 +14,6 @@
           [style.border-color]="categoryBorderColor(category)"
           (click)="selectCategory(category)">
           {{ category.title }}
-        </button>
-      </section>
-    </section>
-
-    <section class="ttEventModal-subcategories" *ngIf="selectedCategory$ | async">
-      <section class="ttEventModal-subcategory" *ngFor="let subcategory of subcategories$ | async">
-        <button class="ttEventModal-subcategoryBtn" type="button"
-          [class.isActive]="(selectedSubcategory$ | async)?.id === subcategory.id"
-          [style.background-color]="subcategoryBgColor(subcategory)" [style.color]="subcategoryColor(subcategory)"
-          [style.border-color]="subcategoryBorderColor(subcategory)"
-          (click)="selectSubcategory(subcategory)">
-          {{ subcategory.title }}
         </button>
       </section>
     </section>

@@ -5,6 +5,13 @@
   padding-right: $base-padding;
   padding-bottom: $base-padding;
   padding-left: $sidebar-width + $base-padding;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    padding-top: ($base-padding / 2) + $navbar-height * 2 / 3;
+    padding-bottom: ($base-padding / 2) + $navbar-height;
+    padding-left: ($base-padding / 2);
+    padding-right: $base-padding / 2;
+  }
 }
 
 .ttDay-eventList {
@@ -23,4 +30,39 @@
   bottom: 0;
   left: 0;
   width: $sidebar-width;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    right: 0;
+    bottom: unset;
+    width: unset;
+    height: $navbar-height * 2 / 3;
+  }
+}
+
+.ttDay-mobileAddBtn {
+  @extend %tt-fw-medium;
+  display: none;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: $navbar-height;
+  font-size: $tt-fs-7;
+  color: white;
+  background-color: $brand-primary-darker;
+  border: 0;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.ttDay-noEvents {
+  text-align: center;
+  padding: $base-padding * 4;
+  font-size: $tt-fs-7;
+  color: $brand-secondary-darker;
 }

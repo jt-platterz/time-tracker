@@ -8,7 +8,10 @@
     <section class="ttDaySidebar-dateDetails">
       <section class="ttDaySidebar-dateDay">{{ day$ | async }}</section>
       <section class="ttDaySidebar-dateMonthYear">{{ monthYear$ | async }}</section>
+    </section>
 
+    <section class="ttDaySidebar-dateDetailsMobile">
+      {{ day$ | async }}, {{ monthYear$ | async }}
     </section>
     
     <a class="ttDaySidebar-link" [routerLink]="['/date', (nextDay$ | async)]">

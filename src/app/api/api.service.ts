@@ -18,7 +18,17 @@ export class ApiService {
 
   post(path: string, body: any = {}, params: any = {}): Observable<any> {
     return this._http
-      .post(this._buildUrl(path), body, this._buildOptions());
+      .post(this._buildUrl(path), body, this._buildOptions(params));
+  }
+
+  patch(path: string, body: any = {}, params: any = {}): Observable<any> {
+    return this._http
+      .patch(this._buildUrl(path), body, this._buildOptions(params));
+  }
+
+  delete(path: string, params: any = {}): Observable<any> {
+    return this._http
+      .delete(this._buildUrl(path), this._buildOptions(params));
   }
 
   private _buildUrl(path: string): string {

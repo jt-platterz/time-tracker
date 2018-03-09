@@ -5,4 +5,12 @@
   <section class="ttDay-eventList">
     <tt-event [eventID]="eventID" *ngFor="let eventID of events$ | async" class="ttDay-event"></tt-event>
   </section>
+
+  <section class="ttDay-noEvents" *ngIf="(events$ | async) && (events$ | async)?.length === 0">
+    No Events
+  </section>
+
+  <button class="ttDay-mobileAddBtn" type="button" (click)="addEvent()">
+    Add Event
+  </button>
 </section>

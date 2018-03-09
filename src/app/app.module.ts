@@ -11,8 +11,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CategoryModule } from './category/category.module';
 
 import { AppComponent } from './app.component';
-import { SubcategoryModule } from './subcategory/subcategory.module';
-import { SubcategoryEffects } from './subcategory/store/subcategory.effects';
 import { EventModule } from './event/event.module';
 import { DayModule } from './day/day.module';
 import { appRoutes } from './app.routes';
@@ -38,7 +36,6 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     NavbarModule,
     AuthModule,
     CategoryModule,
-    SubcategoryModule,
     EventModule,
     DayModule
   ],

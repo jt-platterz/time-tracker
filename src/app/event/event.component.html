@@ -8,7 +8,12 @@
 
   <section class="ttEvent-details" [style.border-color]="mainColor$ | async">
     <section class="ttEvent-header" [style.background-color]="mainColor$ | async">
-      {{ (category$ | async)?.title }} - {{ (subcategory$ | async)?.title }}
+      {{ (category$ | async)?.title }}
+
+      <section class="ttEvent-headerActions">
+        <button type="button" class="ttEvent-editBtn" (click)="editEvent()"><fa name="edit"></fa></button>
+        <button type="button" class="ttEvent-deleteBtn" (click)="deleteEvent()"><fa name="trash"></fa></button>
+      </section>
     </section>
     <section class="ttEvent-description">
       {{ (event$ | async)?.title }}

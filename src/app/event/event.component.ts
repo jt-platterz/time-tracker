@@ -4,13 +4,13 @@ import { IEvent } from './event.model';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
 import { selectEvent } from './store/event.selectors';
-import { ISubcategory } from '../subcategory/subcategory.model';
-import { selectSubcategories, selectSubcategory } from '../subcategory/store/subcategory.selectors';
 import { ICategory } from '../category/category.model';
 import { selectCategory } from '../category/store/category.selectors';
 import { lightenColor, transparentize } from './colors';
 import * as moment from 'moment';
 import { ReactiveComponent } from '../reactive-component/reactive.component';
+import { eventDelete, eventOpenModal } from './store/event.actions';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'tt-event',
@@ -22,7 +22,6 @@ export class EventComponent extends ReactiveComponent implements OnInit {
 
   event$: Observable<IEvent>;
   category$: Observable<ICategory>;
-  subcategory$: Observable<ISubcategory>;
   lightColor$: Observable<string>;
   mainColor$: Observable<string>;
   time$: Observable<string>;
@@ -37,31 +36,48 @@ export class EventComponent extends ReactiveComponent implements OnInit {
     this.event$ =
       this._store
         .select(selectEvent(this.eventID))
-        .takeUntil(this._destroy$);
-
-    this.subcategory$ =
-      this.event$
-        .switchMap((event) => this._store.select(selectSubcategory(event.subcategory_id)));
+        .filter((event) => event != null)
+        .takeUntil(this._destroy$)
+        .shareReplay(1);
 
     this.category$ =
-      this.subcategory$
-        .filter((subcategory) => subcategory != null)
-        .switchMap((subcategory) => this._store.select(selectCategory(subcategory.category_id)));
+      this.event$
+        .switchMap((event) => this._store.select(selectCategory(event.category_id)))
+        .takeUntil(this._destroy$)
+        .shareReplay(1);
 
     this.mainColor$ =
       this.category$
         .filter((category) => category != null)
-        .map((category) => `#${category.color}`);
+        .map((category) => `#${category.color}`)
+        .takeUntil(this._destroy$)
+        .shareReplay(1);
 
     this.lightColor$ =
       this.category$
         .filter((category) => category != null)
-        .map((category) => transparentize(category.color, 90));
+        .map((category) => transparentize(category.color, 90))
+        .takeUntil(this._destroy$)
+        .shareReplay(1);
 
     this.time$ =
       this.event$
         .filter((event) => event != null)
         .map((event) => moment(event.datetime))
-        .map((time) => time.format('h:mm A'));
+        .map((time) => time.format('h:mm A'))
+        .takeUntil(this._destroy$)
+        .shareReplay(1);
+  }
+
+  deleteEvent(): void {
+    this.event$
+      .take(1)
+      .subscribe((event) => this._store.dispatch(eventDelete(event)));
+  }
+
+  editEvent(): void {
+    this.event$
+      .take(1)
+      .subscribe((event) => this._store.dispatch(eventOpenModal(event)));
   }
 }

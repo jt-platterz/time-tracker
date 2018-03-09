@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { Observable } from 'rxjs/Rx';
-import { ISubcategory } from './subcategory.model';
+import { ICategory } from './category.model';
 
 @Injectable()
-export class SubcategoryService {
+export class CategoryService {
   constructor (private _api: ApiService) {}
 
-  list(): Observable<ISubcategory[]> {
+  list(): Observable<ICategory[]> {
     return this._api
-      .get('subcategories')
-      .map((response) => response.subcategories);
+      .get('categories')
+      .map((response) => response.categories);
   }
 }

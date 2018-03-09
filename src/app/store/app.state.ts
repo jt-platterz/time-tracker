@@ -1,6 +1,5 @@
 import { ICategoryState } from '../category/store/category.state';
 import { IEventState } from '../event/store/event.state';
-import { ISubcategoryState } from '../subcategory/store/subcategory.state';
 import { IAuthState } from '../auth/store/auth.state';
 
 export const SUBCATEGORY_STATE_NAME = 'subcategory';
@@ -10,5 +9,4 @@ export interface IAppState {
   auth?: IAuthState;
   category?: ICategoryState;
   events?: IEventState;
-  subcategories?: ISubcategoryState;
 }

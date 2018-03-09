@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { dateParamToDate, nextDay, prevDay } from './day.helpers';
 import { selectEvents, selectEventsForDate, selectModalEvent } from '../event/store/event.selectors';
-import { eventRequest, eventCreate, eventOpenModal, eventCloseModal } from '../event/store/event.actions';
+import { eventRequest, eventOpenModal, eventCloseModal } from '../event/store/event.actions';
 import { ReactiveComponent } from '../reactive-component/reactive.component';
 import { Moment } from '../date/moment';
 
@@ -62,9 +62,7 @@ export class DayComponent extends ReactiveComponent implements OnInit, OnDestroy
         .takeUntil(this._destroy$);
   }
 
-  newEvent(event: MouseEvent): void {
-    event.stopPropagation();
-    event.preventDefault();
+  addEvent(): void {
     this._store.dispatch(eventOpenModal({} as IEvent));
   }
 

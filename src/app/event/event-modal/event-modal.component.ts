@@ -1,15 +1,13 @@
 import { animate, trigger, transition, style } from '@angular/animations';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { IEvent } from '../event.model';
 import { cloneDeep } from 'lodash';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
-import { eventCreate, eventOpenModal, eventCloseModal } from '../store/event.actions';
+import { eventSave, eventOpenModal, eventCloseModal } from '../store/event.actions';
 import { Observable, Subject, BehaviorSubject } from 'rxjs/Rx';
 import { ICategory } from '../../category/category.model';
-import { ISubcategory } from '../../subcategory/subcategory.model';
 import { selectCategories, selectCategory } from '../../category/store/category.selectors';
-import { selectSubcategories, selectSubcategoriesByCategory } from '../../subcategory/store/subcategory.selectors';
 import { ReactiveComponent } from '../../reactive-component/reactive.component';
 import { selectModalEvent } from '../store/event.selectors';
 
@@ -40,12 +38,12 @@ import { selectModalEvent } from '../store/event.selectors';
   styleUrls: ['./event-modal.component.scss'],
   templateUrl: './event-modal.component.html'
 })
-export class EventModalComponent extends ReactiveComponent implements OnInit, OnDestroy {
+export class EventModalComponent extends ReactiveComponent implements AfterViewInit, OnInit, OnDestroy {
   event$: Observable<IEvent>;
   categories$: Observable<ICategory[]>;
-  subcategories$: Observable<ISubcategory[]>;
   selectedCategory$: BehaviorSubject<ICategory> = new BehaviorSubject<ICategory>(null);
-  selectedSubcategory$: BehaviorSubject<ISubcategory> = new BehaviorSubject<ISubcategory>(null);
+
+  @ViewChild('titleInput') titleInput: ElementRef;
 
   private _event: IEvent;
 
@@ -59,39 +57,21 @@ export class EventModalComponent extends ReactiveComponent implements OnInit, On
         .select(selectModalEvent)
         .map((event) => cloneDeep(event));
 
-    this.selectedSubcategory$
-      .withLatestFrom(this.event$)
-      .subscribe(([subCat, event]) => {
-        if (subCat) {
-          this.updateEventField('subcategory_id', subCat.id);
-        }
-      });
-
     this.categories$ =
       this._store
         .select(selectCategories)
         .takeUntil(this._destroy$);
+  }
 
-    this.categories$
-      .withLatestFrom(this.event$)
-      .filter(([categories, event]) => event != null && categories && categories.length > 0)
-      .subscribe(([categories, event]) => {
-        const cat = categories.find((c) => event && c.id === event.category_id) || categories[0];
-        this.selectedCategory$.next(cat);
-      });
-
-    this.subcategories$ =
-      this.selectedCategory$
-        .filter((category) => category != null)
-        .switchMap((category) => this._store.select(selectSubcategoriesByCategory(category.id)))
-        .switchMap((subCatIDs) => this._store.select(selectSubcategories(subCatIDs)));
-
-    this.subcategories$
-    .withLatestFrom(this.event$)
-      .filter(([subcategories, _]) => subcategories && subcategories.length > 0)
-      .subscribe(([subcategories, event]) => {
-        const subCat = subcategories.find((c) => event && c.id === event.subcategory_id) || subcategories[0];
-        this.selectedSubcategory$.next(subCat);
+  ngAfterViewInit(): void {
+    Observable
+      .combineLatest(this.event$, this.categories$)
+      .filter(([event, _]) => event != null)
+      .filter(([_, categories]) => categories && categories.length > 0)
+      .takeUntil(this._destroy$)
+      .subscribe(([event, categories]) => {
+        const eventCat = categories.find((c) => c.id === event.category_id);
+        this.selectedCategory$.next(eventCat || categories[0]);
       });
   }
 
@@ -99,26 +79,28 @@ export class EventModalComponent extends ReactiveComponent implements OnInit, On
     this.event$
       .take(1)
       .subscribe((event) => {
-        if (!event.subcategory_id || !event.title) {
+        if (!event.category_id || !event.title) {
           return;
         }
 
-        this._store.dispatch(eventCreate(event));
+        this._store.dispatch(eventSave(event));
       });
   }
 
   updateEventField(field: string, value: any): void {
     this.event$
       .take(1)
-      .subscribe((event) => this._store.dispatch(eventOpenModal({...event, [field]: value})));
+      .subscribe((event) => {
+        const eventToEmit = {...event, [field]: value};
+        debugger
+        this._store.dispatch(eventOpenModal(eventToEmit))
+      });
   }
 
   selectCategory(category: ICategory): void {
+    this.updateEventField('category_id', category.id);
     this.selectedCategory$.next(category);
-  }
-
-  selectSubcategory(subcategory: ISubcategory): void {
-    this.selectedSubcategory$.next(subcategory);
+    this.titleInput.nativeElement.focus();
   }
 
   categoryBgColor(category: ICategory): string {
@@ -157,35 +139,6 @@ export class EventModalComponent extends ReactiveComponent implements OnInit, On
     }
 
     return `#${category.color}`;
-  }
-
-  subcategoryBgColor(subcategory: ISubcategory): string {
-    const selectedCategory = this.selectedCategory$.value;
-    const selectedSubcategory = this.selectedSubcategory$.value;
-
-    if (selectedSubcategory.id === subcategory.id) {
-      return `#${selectedCategory.color}`;
-    }
-
-    return '#ffffff';
-  }
-
-  subcategoryColor(subcategory: ISubcategory): string {
-    const selectedCategory = this.selectedCategory$.value;
-    const selectedSubcategory = this.selectedSubcategory$.value;
-
-    if (selectedSubcategory.id === subcategory.id) {
-      return '#ffffff';
-    }
-
-    return `#${selectedCategory.color}`;
-  }
-
-  subcategoryBorderColor(subcategory: ISubcategory): string {
-    const selectedCategory = this.selectedCategory$.value;
-    const selectedSubcategory = this.selectedSubcategory$.value;
-
-    return `#${selectedCategory.color}`;
   }
 
   hideModal(): void {

@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IAppState } from './store/app.state';
-import { subcategoryRequest } from './subcategory/store/subcategory.actions';
-import { SubcategoryService } from './subcategory/subcategory.service';
 import * as moment from 'moment';
-import { eventRequest, eventCreate, eventOpenModal } from './event/store/event.actions';
+import { eventRequest, eventOpenModal } from './event/store/event.actions';
 import { Observable } from 'rxjs/Rx';
 import { IEvent } from './event/event.model';
 import { selectModalEvent } from './event/store/event.selectors';
 import { cloneDeep } from 'lodash';
 import { authInitialize } from './auth/store/auth.actions';
 import { selectCurrentUser } from './auth/store/auth.selectors';
+import { categoryRequest } from './category/store/category.actions';
 
 @Component({
   selector: 'tt-root',
@@ -28,6 +27,6 @@ export class AppComponent implements OnInit {
     this._store
       .select(selectCurrentUser)
       .filter((user) => user != null)
-      .subscribe(() => this._store.dispatch(subcategoryRequest()));
+      .subscribe(() => this._store.dispatch(categoryRequest()));
   }
 }

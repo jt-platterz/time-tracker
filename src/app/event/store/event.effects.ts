@@ -2,7 +2,22 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { EventService } from '../event.service';
 import { Observable } from 'rxjs/Rx';
-import { EventActions, IEventRequestAction, eventRequestSuccess, EventAction, IEventCreateAction, eventCreateSuccess, eventCreateFailure, IEventCreateSuccessAction, eventRequest, eventCloseModal } from './event.actions';
+import {
+  EventActions,
+  IEventRequestAction,
+  eventRequestSuccess,
+  EventAction,
+  IEventSaveAction,
+  eventSaveSuccess,
+  eventSaveFailure,
+  IEventSaveSuccessAction,
+  eventRequest,
+  eventCloseModal,
+  IEventDeleteAction,
+  eventDelete,
+  eventDeleteFailure,
+  eventDeleteSuccess,
+  IEventDeleteSuccessAction } from './event.actions';
 import * as moment from 'moment';
 
 @Injectable()
@@ -26,26 +41,37 @@ export class EventEffects {
   @Effect()
   createEvent(): Observable<EventAction> {
     return this._actions
-      .ofType<IEventCreateAction>(EventActions.Create)
+      .ofType<IEventSaveAction>(EventActions.Save)
       .concatMap((action) => {
         return this._eventService
-          .create(action.event)
-          .map((event) => eventCreateSuccess(event))
-          .catch((errors) => [eventCreateFailure(errors)]);
+          .save(action.event)
+          .map((event) => eventSaveSuccess(event))
+          .catch((errors) => [eventSaveFailure(errors)]);
+      });
+  }
+
+  @Effect()
+  deleteEvent(): Observable<EventAction> {
+    return this._actions
+      .ofType<IEventDeleteAction>(EventActions.Delete)
+      .mergeMap((action) => {
+        return this._eventService.delete(action.event.id)
+          .map(() => eventDeleteSuccess(action.event))
+          .catch(() => [eventDeleteFailure('Could not delete')]);
       });
   }
 
   @Effect()
   refetchEvents(): Observable<EventAction> {
   return this._actions
-    .ofType<IEventCreateSuccessAction>(EventActions.CreateSuccess)
+    .ofType<IEventSaveSuccessAction | IEventDeleteSuccessAction>(EventActions.SaveSuccess, EventActions.DeleteSuccess)
     .map((action) => eventRequest(moment(action.event.datetime)));
   }
 
   @Effect()
   closeModal(): Observable<EventAction> {
   return this._actions
-    .ofType<IEventCreateSuccessAction>(EventActions.CreateSuccess)
+    .ofType<IEventSaveSuccessAction>(EventActions.SaveSuccess)
     .map((action) => eventCloseModal());
   }
 }

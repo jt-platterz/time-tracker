@@ -9,6 +9,7 @@ import { EventComponent } from './event.component';
 import { CommonModule } from '@angular/common';
 import { EventModalComponent } from './event-modal/event-modal.component';
 import { FormsModule } from '@angular/forms';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     StoreModule.forFeature(EVENT_STATE_NAME, eventReducer),
-    EffectsModule.forFeature([EventEffects])
+    EffectsModule.forFeature([EventEffects]),
+    AngularFontAwesomeModule
   ],
   providers: [
     EventService
