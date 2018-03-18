@@ -11,7 +11,9 @@ export enum EventActions {
   CloseModal = '[EVENT] Close Modal',
   Delete = '[EVENT] Delete Request',
   DeleteSuccess = '[EVENT] Delete Success',
-  DeleteFailure = '[EVENT] Delete Failure'
+  DeleteFailure = '[EVENT] Delete Failure',
+  AddEvent = '[EVENT] Add Event',
+  RemoveEvent = '[EVENT] Remove Event'
 }
 
 export interface IEventRequestAction {
@@ -94,6 +96,22 @@ export function eventDeleteFailure(errors: any): IEventDeleteFailureAction {
   return {errors, type: EventActions.DeleteFailure};
 }
 
+export interface IEventAddEventAction {
+  type: EventActions.AddEvent;
+  event: IEvent;
+}
+export function eventAddEvent(event: IEvent): IEventAddEventAction {
+  return {event, type: EventActions.AddEvent};
+}
+
+export interface IEventRemoveEventAction {
+  type: EventActions.RemoveEvent;
+  eventID: number;
+}
+export function eventRemoveEvent(eventID: number): IEventRemoveEventAction {
+  return {eventID, type: EventActions.RemoveEvent};
+}
+
 export type EventAction
   = IEventRequestAction
   | IEventRequestSuccessAction
@@ -104,5 +122,7 @@ export type EventAction
   | IEventCloseModalAction
   | IEventDeleteAction
   | IEventDeleteSuccessAction
-  | IEventDeleteFailureAction;
+  | IEventDeleteFailureAction
+  | IEventAddEventAction
+  | IEventRemoveEventAction;
 

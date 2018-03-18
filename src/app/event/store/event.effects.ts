@@ -62,13 +62,6 @@ export class EventEffects {
   }
 
   @Effect()
-  refetchEvents(): Observable<EventAction> {
-  return this._actions
-    .ofType<IEventSaveSuccessAction | IEventDeleteSuccessAction>(EventActions.SaveSuccess, EventActions.DeleteSuccess)
-    .map((action) => eventRequest(moment(action.event.datetime)));
-  }
-
-  @Effect()
   closeModal(): Observable<EventAction> {
   return this._actions
     .ofType<IEventSaveSuccessAction>(EventActions.SaveSuccess)

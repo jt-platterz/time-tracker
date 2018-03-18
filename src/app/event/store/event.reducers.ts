@@ -1,6 +1,6 @@
-import { IEventState, YearlyEvents } from './event.state';
-import { EventAction, EventActions, IEventRequestSuccessAction, IEventDeleteSuccessAction } from './event.actions';
-import { cloneDeep, sortBy } from 'lodash';
+import { IEventState, YearlyEvents, MonthlyEvents } from './event.state';
+import { EventAction, EventActions, IEventRequestSuccessAction, IEventDeleteSuccessAction, IEventAddEventAction } from './event.actions';
+import { cloneDeep, sortBy, uniq, compact } from 'lodash';
 import * as moment from 'moment';
 import { IEvent } from '../event.model';
 
@@ -12,6 +12,7 @@ const DEFAULT_STATE = {
 
 export function eventReducer(state: IEventState = DEFAULT_STATE, action: EventAction): IEventState {
   let newEvents: Map<number, IEvent>;
+  let newEventGroups: YearlyEvents;
 
   switch (action.type) {
     case EventActions.RequestSuccess:
@@ -36,14 +37,27 @@ export function eventReducer(state: IEventState = DEFAULT_STATE, action: EventAc
         modal: null
       };
 
-    case EventActions.DeleteSuccess:
-      newEvents = new Map(state.events);
-      newEvents.delete(action.event.id);
+      case EventActions.RemoveEvent:
+        newEvents = new Map(cloneDeep(state.events));
+        newEvents.delete(action.eventID);
+        newEventGroups = _eventRemoved(action.eventID, state, newEvents);
+  
+        return {
+          ...state,
+          events: newEvents,
+          eventGroups: newEventGroups
+        };
 
-      return {
-        ...state,
-        events: cloneDeep(newEvents)
-      };
+      case EventActions.AddEvent:
+        newEvents = new Map(cloneDeep(state.events));
+        newEvents.set(action.event.id, action.event);
+        newEventGroups = _eventAdded(action, state, newEvents);
+
+        return {
+          ...state,
+          events: cloneDeep(newEvents),
+          eventGroups: newEventGroups
+        };
 
     default:
       return state;
@@ -51,21 +65,59 @@ export function eventReducer(state: IEventState = DEFAULT_STATE, action: EventAc
 }
 
 function _buildEventGroups(action: IEventRequestSuccessAction, state: IEventState): YearlyEvents {
-  const newGroups = new Map(state.eventGroups);
+  const date = action.date;
+  const newYearMap = new Map<number, MonthlyEvents>(cloneDeep(state.eventGroups));
+  const newMonthMap = newYearMap.get(date.year()) || new Map();
+  const newDateMap = newMonthMap.get(date.month() + 1) || new Map();
 
-  let newYearMap = newGroups.get(action.date.year());
-  if (!newYearMap) {
-    newYearMap = new Map();
+  newDateMap.set(action.date.date(), sortBy(action.events, (e) => -moment(e.datetime).unix()).map((e) => e.id));
+  newMonthMap.set(action.date.month() + 1, newDateMap);
+  newYearMap.set(action.date.year(), newMonthMap);
+
+  return cloneDeep(newYearMap);
+}
+
+function _eventAdded(action: IEventAddEventAction, state: IEventState, events: Map<number, IEvent>): YearlyEvents {
+  const event = action.event;
+  const date = moment(event.datetime);
+  const newYearMap = new Map<number, MonthlyEvents>(cloneDeep(state.eventGroups));
+  const newMonthMap = newYearMap.get(date.year()) || new Map();
+  const newDateMap = newMonthMap.get(date.month() + 1) || new Map();
+
+  const eventIDs = newDateMap.get(date.date());
+  if (!eventIDs || !eventIDs.length) {
+    newDateMap.set(date.date(), [event.id]);
+  } else {
+    eventIDs.push(event.id);
+    newDateMap.set(date.date(), sortBy(uniq(eventIDs), (id) => -moment(events.get(id).datetime).unix()));
   }
 
-  let newMonthMap = newYearMap.get(action.date.month());
-  if (!newMonthMap) {
-    newMonthMap = new Map();
-  }
+  newMonthMap.set(date.month() + 1, newDateMap);
+  newYearMap.set(date.year(), newMonthMap);
 
-  newMonthMap.set(action.date.date(), sortBy(action.events, (e) => -moment(e.datetime).unix()).map((e) => e.id));
-  newYearMap.set(action.date.month() + 1, newMonthMap);
-  newGroups.set(action.date.year(), newYearMap);
+  return cloneDeep(newYearMap);
+}
 
-  return cloneDeep(newGroups);
+function _eventRemoved(eventID, state: IEventState, events: Map<number, IEvent>): YearlyEvents {
+  const newYearMap = new Map<number, MonthlyEvents>(cloneDeep(state.eventGroups));
+
+  Array.from(newYearMap.keys()).forEach((year) => {
+    const newMonthMap = newYearMap.get(year);
+
+    Array.from(newMonthMap.keys()).forEach((month) => {
+      const newDateMap = newMonthMap.get(month);
+
+      Array.from(newDateMap.keys()).forEach((date) => {
+        const ids = newDateMap.get(date) || [];
+        
+        newDateMap.set(date, ids.filter((id) => id !== eventID));
+      });
+
+      newMonthMap.set(month, newDateMap);
+    });
+
+    newYearMap.set(year, newMonthMap);
+  });
+
+  return newYearMap;
 }
