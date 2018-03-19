@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://time-tracker-api.joshtate.me/api/'
-  // apiUrl: 'http://localhost:3000/api/'
+  // apiUrl: 'https://time-tracker-api.joshtate.me/api/'
+  apiUrl: 'http://localhost:3000/api/'
 };
