@@ -45,22 +45,24 @@ export class EventModalComponent extends ReactiveComponent implements AfterViewI
 
   @ViewChild('titleInput') titleInput: ElementRef;
 
-  private _event: IEvent;
-
   constructor(private _store: Store<IAppState>) {
     super();
   }
 
   ngOnInit(): void {
-    this._store
-      .select(selectModalEvent)
-      .takeUntil(this._destroy$)
-      .subscribe((event) => this.event = cloneDeep(event));
-
     this.categories$ =
       this._store
         .select(selectCategories)
         .takeUntil(this._destroy$);
+    this._store
+      .select(selectModalEvent)
+      .do((event) => this.event = cloneDeep(event))
+      .filter((event) => event != null)
+      .takeUntil(this._destroy$)
+      .withLatestFrom(this.categories$)
+      .subscribe(([event, categories]) => {
+        if (event) { this.selectCategory(categories.find((c) => event.category_id === c.id)); }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -91,7 +93,7 @@ export class EventModalComponent extends ReactiveComponent implements AfterViewI
 
   selectCategory(category: ICategory): void {
     this.selectedCategory$.next(category);
-    this.titleInput.nativeElement.focus();
+    setTimeout(() => this.titleInput.nativeElement.focus(), 300);
   }
 
   categoryBgColor(category: ICategory): string {
