@@ -39,7 +39,7 @@ import { selectModalEvent } from '../store/event.selectors';
   templateUrl: './event-modal.component.html'
 })
 export class EventModalComponent extends ReactiveComponent implements AfterViewInit, OnInit, OnDestroy {
-  event$: Observable<IEvent>;
+  event: IEvent;
   categories$: Observable<ICategory[]>;
   selectedCategory$: BehaviorSubject<ICategory> = new BehaviorSubject<ICategory>(null);
 
@@ -52,10 +52,10 @@ export class EventModalComponent extends ReactiveComponent implements AfterViewI
   }
 
   ngOnInit(): void {
-    this.event$ =
-      this._store
-        .select(selectModalEvent)
-        .map((event) => cloneDeep(event));
+    this._store
+      .select(selectModalEvent)
+      .takeUntil(this._destroy$)
+      .subscribe((event) => this.event = cloneDeep(event));
 
     this.categories$ =
       this._store
@@ -64,36 +64,29 @@ export class EventModalComponent extends ReactiveComponent implements AfterViewI
   }
 
   ngAfterViewInit(): void {
-    Observable
-      .combineLatest(this.event$, this.categories$)
-      .filter(([event, _]) => event != null)
-      .filter(([_, categories]) => categories && categories.length > 0)
+    this.categories$
+      .filter((categories) => this.event != null && categories && categories.length > 0)
       .takeUntil(this._destroy$)
-      .subscribe(([event, categories]) => {
-        const eventCat = categories.find((c) => c.id === event.category_id) || categories[0];
+      .subscribe((categories) => {
+        const eventCat = categories.find((c) => c.id === this.event.category_id) || categories[0];
         this.selectedCategory$.next(eventCat);
       });
   }
 
   addEvent(): void {
-    this.event$
-      .withLatestFrom(this.selectedCategory$)
+    this.selectedCategory$
       .take(1)
-      .subscribe(([event, category]) => {
-        if (!category.id || !event.title) {
+      .subscribe((category) => {
+        if (!category.id || !this.event.title) {
           return;
         }
 
-        this._store.dispatch(eventSave({...event, category_id: category.id}));
+        this._store.dispatch(eventSave({...this.event, category_id: category.id}));
       });
   }
 
   updateEventField(field: string, value: any): void {
-    this.event$
-      .take(1)
-      .subscribe((event) => {
-        this._store.dispatch(eventOpenModal({...event, [field]: value}));
-      });
+    this.event[field] = value;
   }
 
   selectCategory(category: ICategory): void {

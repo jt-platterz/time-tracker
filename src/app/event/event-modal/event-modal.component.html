@@ -1,6 +1,6 @@
-<section class="ttEventModal-backdrop" (click)="hideModal()" *ngIf="event$ | async" [@modalBackdropAnimation]></section>
+<section class="ttEventModal-backdrop" (click)="hideModal()" *ngIf="event" [@modalBackdropAnimation]></section>
 
-<section class="ttEventModal" *ngIf="event$ | async; let event" [@modalAnimation]>
+<section class="ttEventModal" *ngIf="event" [@modalAnimation]>
   <form (ngSubmit)="addEvent()">
     <section class="ttEventModal-title">
       <input [ngModel]="event.title" (ngModelChange)="updateEventField('title', $event)" name="title" class="ttEventModal-input" placeholder="Task name here..." autofocus #titleInput>

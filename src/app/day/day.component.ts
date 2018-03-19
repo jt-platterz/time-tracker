@@ -40,8 +40,7 @@ export class DayComponent extends ReactiveComponent implements OnInit, OnDestroy
 
   ngOnInit(): void {
     this.routeParam$ =
-      this._route
-        .params
+      this._route.params
         .map((p) => p.date)
         .takeUntil(this._destroy$);
 
@@ -58,8 +57,11 @@ export class DayComponent extends ReactiveComponent implements OnInit, OnDestroy
     this.dateForEvents$ =
       Observable
         .combineLatest(this.routeParam$, this.routeDate$, this.now$)
+        .filter(([_, __, now]) => now != null)
+        .do(() => console.log('test'))
         .map(([routeParam, routeDate, now]) => !!routeParam ? routeDate : now)
-        .takeUntil(this._destroy$);
+        .takeUntil(this._destroy$)
+        .shareReplay(1);
 
     this.events$ =
       this.dateForEvents$
@@ -67,25 +69,29 @@ export class DayComponent extends ReactiveComponent implements OnInit, OnDestroy
         .takeUntil(this._destroy$);
 
     this.dateForEvents$
-      .first()
-      .subscribe((date) => {
+      .map((date) => date.format('YYYY-MM-DD'))
+      .distinctUntilChanged()
+      .do((date) => console.log(`Resetting: ${date}`))
+      .withLatestFrom(this.dateForEvents$)
+      .subscribe(([_, date]) => {
         this._store.dispatch(eventRequest(date));
         this._cableService.subscribeToChannel(Channels.Event, {date: date.format('YYYY-MM-DD')});
-
-        const cableEvents = this._broadcaster
-          .on<any>('EventChannel')
-          .takeUntil(this._destroy$);
-
-        cableEvents
-          .filter((e) => e.type !== 'destroy')
-          .subscribe((cableEvent) => this._store.dispatch(eventAddEvent(cableEvent.event)));
-
-        cableEvents
-          .filter((e) => e.type === 'destroy')
-          .subscribe((cableEvent) => this._store.dispatch(eventRemoveEvent(cableEvent.event_id)));
       });
 
+    const cableEvents = this._broadcaster
+      .on<any>('EventChannel')
+      .takeUntil(this._destroy$);
+
+    cableEvents
+      .filter((e) => e.type !== 'destroy')
+      .subscribe((cableEvent) => this._store.dispatch(eventAddEvent(cableEvent.event)));
+
+    cableEvents
+      .filter((e) => e.type === 'destroy')
+      .subscribe((cableEvent) => this._store.dispatch(eventRemoveEvent(cableEvent.event_id)));
+
     this._destroy$
+      .do(() => console.log('destroyed'))
       .subscribe(() => this._cableService.unsubscribe());
   }
 
